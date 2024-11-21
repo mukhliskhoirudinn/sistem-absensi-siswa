@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\Backend;
 
-use App\Http\Controllers\Controller;
-use App\Models\Teacher; // Pastikan model Teacher sudah ada
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+use App\Models\Teacher; // Pastikan model Teacher sudah ada
 
 class TeacherController extends Controller
 {
@@ -39,16 +41,16 @@ class TeacherController extends Controller
             'address' => 'required|string',
             'phone' => 'required|string|max:15',
             'email' => 'required|email|unique:teachers',
-            'photo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            'password' => 'required|string|min:8|confirmed', // Validasi untuk password
+            'photo' => 'required|image|mimes:jpg,jpeg,png|max:2048',
+            'password' => 'required|string|min:8|confirmed',
         ]);
 
         // Buat pengguna baru
         $user = new User();
-        $user->name = $request->name; // Nama sama dengan guru
-        $user->email = $request->email; // Email sama dengan guru
-        $user->password = bcrypt($request->password); // Enkripsi password
-        $user->role = 'guru'; // Set role sebagai guru
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->password = bcrypt($request->password);
+        $user->role = 'guru';
         $user->save();
 
         // Buat data guru
@@ -58,7 +60,7 @@ class TeacherController extends Controller
         $teacher->address = $request->address;
         $teacher->phone = $request->phone;
         $teacher->email = $request->email;
-        $teacher->user_id = $user->id; // Hubungkan dengan user yang baru dibuat
+        $teacher->user_id = $user->id;
 
         // Upload photo if exists
         if ($request->hasFile('photo')) {
@@ -95,7 +97,7 @@ class TeacherController extends Controller
     {
         // Temukan guru berdasarkan ID
         $teacher = Teacher::findOrFail($id);
-        $user = $teacher->user; // Ambil pengguna yang terkait
+        $user = $teacher->user;
 
         // Validasi data yang diterima
         $request->validate([
@@ -106,20 +108,18 @@ class TeacherController extends Controller
             'email' => [
                 'required',
                 'email',
-                Rule::unique('teachers')->ignore($teacher->id), // Mengabaikan validasi unik untuk email yang sama
-                Rule::unique('users')->ignore($user->id), // Mengabaikan validasi unik untuk email pengguna yang sama
+                Rule::unique('teachers')->ignore($teacher->id),
+                Rule::unique('users')->ignore($user->id),
             ],
             'photo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            'password' => 'nullable|string|min:8|confirmed', // Validasi password
+            'password' => 'nullable|string|min:8|confirmed',
         ]);
 
         // Hapus foto lama jika ada dan upload foto baru jika ada
         if ($request->hasFile('photo')) {
-            // Hapus foto lama jika ada
             if ($teacher->photo) {
                 Storage::disk('public')->delete($teacher->photo);
             }
-            // Upload foto baru
             $teacher->photo = $request->file('photo')->store('photos', 'public');
         }
 
@@ -128,26 +128,28 @@ class TeacherController extends Controller
         $teacher->name = $request->name;
         $teacher->address = $request->address;
         $teacher->phone = $request->phone;
-        $teacher->email = $request->email; // Update email guru
+        $teacher->email = $request->email;
 
-        // Update email pengguna yang terkait
-        $user->email = $request->email; // Update email pengguna
+        // Update email dan nama pengguna yang terkait
+        $user->name = $request->name;
+        $user->email = $request->email;
 
         // Jika password baru diisi, update password
         if ($request->filled('password')) {
-            $user->password = bcrypt($request->password); // Enkripsi password baru
+            $user->password = bcrypt($request->password);
         }
 
         // Simpan perubahan pada pengguna dan guru
-        $user->save(); // Simpan perubahan pada pengguna
-        $teacher->save(); // Simpan perubahan pada guru
+        $user->save();
+        $teacher->save();
 
+        // Debugging: Cek apakah data sudah diperbarui
+        Log::info('User  updated:', ['user' => $user]);
+
+        // Redirect ke halaman yang sesuai
         return redirect()->route('panel.teacher.index')->with('success', 'Guru berhasil diperbarui.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     /**
      * Remove the specified resource from storage.
      */
@@ -161,9 +163,9 @@ class TeacherController extends Controller
         }
 
         // Hapus pengguna yang terkait
-        $user = $teacher->user; // Ambil pengguna yang terkait
+        $user = $teacher->user;
         if ($user) {
-            $user->delete(); // Hapus pengguna
+            $user->delete();
         }
 
         // Hapus guru

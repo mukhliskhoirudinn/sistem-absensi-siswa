@@ -13,7 +13,7 @@
                         </div>
                         <div class="col-md-6">
                             <div class="card-body">
-                                <div class="text-center mb-4 mt-4">
+                                <div class="text-center mb-4 mt-5">
                                     <h1 class="mb-0"
                                         style="font-size: 2.5rem; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);">
                                         <span class="text-primary">Si</span><span class="text-dark fw-bold">Absensi</span>
@@ -61,18 +61,22 @@
                                         </button>
                                     </div>
 
-                                    <div class="text-center">
+                                    {{-- <div class="text-center">
                                         @if (Route::has('password.request'))
                                             <a class="btn btn-link" href="{{ route('password.request') }}">
                                                 {{ __('Forgot Your Password?') }}
                                             </a>
                                         @endif
-                                    </div>
+                                    </div> --}}
 
-                                    <div class="text-center mt-3">
+                                    {{-- <div class="text-center mt-3 mb-5">
                                         <p class="small">Don't have an account? <a href="{{ route('register') }}"
                                                 class="link-danger">{{ __('Register') }}</a></p>
-                                    </div>
+                                    </div> --}}
+
+                                    <p class="small text-center mt-2 mb-5"><i>Ingin mendaftar?</i>
+                                        <a href="">Hubungi admin.</a>
+                                    </p>
                                 </form>
                             </div>
                         </div>
