@@ -45,4 +45,10 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    // Definisikan relasi dengan model Teacher
+    public function teacher()
+    {
+        return $this->hasOne(Teacher::class);
+    }
 }

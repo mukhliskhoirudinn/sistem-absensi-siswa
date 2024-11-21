@@ -99,6 +99,32 @@
                                     @enderror
                                 </div>
 
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="password">Password Baru ( kosongkan jika tidak ingin
+                                                diganti )</label>
+                                            <input type="password"
+                                                class="form-control @error('password') is-invalid @enderror" id="password"
+                                                name="password">
+                                            @error('password')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="password_confirmation">Konfirmasi Password</label>
+                                            <input type="password"
+                                                class="form-control @error('password_confirmation') is-invalid @enderror"
+                                                id="password_confirmation" name="password_confirmation">
+                                            @error('password_confirmation')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <div class="form-group">
                                     <label for="photo">Photo</label>
                                     <input type="file" class="form-control mb-2 @error('photo') is-invalid @enderror"

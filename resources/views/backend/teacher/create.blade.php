@@ -44,7 +44,7 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="nip">NIP</label>
-                                            <input type="text" class="form-control @error('nip') is-invalid @enderror"
+                                            <input type="number" class="form-control @error('nip') is-invalid @enderror"
                                                 id="nip" name="nip" value="{{ old('nip') }}" required>
                                             @error('nip')
                                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -89,6 +89,31 @@
                                             <input type="email" class="form-control @error('email') is-invalid @enderror"
                                                 id="email" name="email" value="{{ old('email') }}" required>
                                             @error('email')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-1">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="password">Password</label>
+                                            <input type="password"
+                                                class="form-control @error('password') is-invalid @enderror" id="password"
+                                                name="password" required>
+                                            @error('password')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="password_confirmation">Konfirmasi Password</label>
+                                            <input type="password"
+                                                class="form-control @error('password_confirmation') is-invalid @enderror"
+                                                id="password_confirmation" name="password_confirmation" required>
+                                            @error('password_confirmation')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
                                         </div>

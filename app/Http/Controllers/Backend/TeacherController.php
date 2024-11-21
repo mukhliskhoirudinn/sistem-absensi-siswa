@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Teacher; // Pastikan model Teacher sudah ada
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use App\Models\User;
+use Illuminate\Validation\Rule;
 
 class TeacherController extends Controller
 {
@@ -38,14 +40,25 @@ class TeacherController extends Controller
             'phone' => 'required|string|max:15',
             'email' => 'required|email|unique:teachers',
             'photo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'password' => 'required|string|min:8|confirmed', // Validasi untuk password
         ]);
 
+        // Buat pengguna baru
+        $user = new User();
+        $user->name = $request->name; // Nama sama dengan guru
+        $user->email = $request->email; // Email sama dengan guru
+        $user->password = bcrypt($request->password); // Enkripsi password
+        $user->role = 'guru'; // Set role sebagai guru
+        $user->save();
+
+        // Buat data guru
         $teacher = new Teacher();
         $teacher->nip = $request->nip;
         $teacher->name = $request->name;
         $teacher->address = $request->address;
         $teacher->phone = $request->phone;
         $teacher->email = $request->email;
+        $teacher->user_id = $user->id; // Hubungkan dengan user yang baru dibuat
 
         // Upload photo if exists
         if ($request->hasFile('photo')) {
@@ -80,33 +93,54 @@ class TeacherController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        // Temukan guru berdasarkan ID
         $teacher = Teacher::findOrFail($id);
+        $user = $teacher->user; // Ambil pengguna yang terkait
 
+        // Validasi data yang diterima
         $request->validate([
             'nip' => 'required|string|max:20|unique:teachers,nip,' . $teacher->id,
             'name' => 'required|string|max:255',
             'address' => 'required|string',
             'phone' => 'required|string|max:15',
-            'email' => 'required|email|unique:teachers,email,' . $teacher->id,
+            'email' => [
+                'required',
+                'email',
+                Rule::unique('teachers')->ignore($teacher->id), // Mengabaikan validasi unik untuk email yang sama
+                Rule::unique('users')->ignore($user->id), // Mengabaikan validasi unik untuk email pengguna yang sama
+            ],
             'photo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'password' => 'nullable|string|min:8|confirmed', // Validasi password
         ]);
 
+        // Hapus foto lama jika ada dan upload foto baru jika ada
+        if ($request->hasFile('photo')) {
+            // Hapus foto lama jika ada
+            if ($teacher->photo) {
+                Storage::disk('public')->delete($teacher->photo);
+            }
+            // Upload foto baru
+            $teacher->photo = $request->file('photo')->store('photos', 'public');
+        }
+
+        // Update data guru
         $teacher->nip = $request->nip;
         $teacher->name = $request->name;
         $teacher->address = $request->address;
         $teacher->phone = $request->phone;
-        $teacher->email = $request->email;
+        $teacher->email = $request->email; // Update email guru
 
-        // Upload new photo if exists
-        if ($request->hasFile('photo')) {
-            // Delete old photo if exists
-            if ($teacher->photo) {
-                Storage::disk('public')->delete($teacher->photo);
-            }
-            $teacher->photo = $request->file('photo')->store('photos', 'public');
+        // Update email pengguna yang terkait
+        $user->email = $request->email; // Update email pengguna
+
+        // Jika password baru diisi, update password
+        if ($request->filled('password')) {
+            $user->password = bcrypt($request->password); // Enkripsi password baru
         }
 
-        $teacher->save();
+        // Simpan perubahan pada pengguna dan guru
+        $user->save(); // Simpan perubahan pada pengguna
+        $teacher->save(); // Simpan perubahan pada guru
 
         return redirect()->route('panel.teacher.index')->with('success', 'Guru berhasil diperbarui.');
     }
@@ -114,17 +148,27 @@ class TeacherController extends Controller
     /**
      * Remove the specified resource from storage.
      */
+    /**
+     * Remove the specified resource from storage.
+     */
     public function destroy(string $id)
     {
         $teacher = Teacher::findOrFail($id);
 
-        // Delete photo if exists
+        // Hapus foto jika ada
         if ($teacher->photo) {
             Storage::disk('public')->delete($teacher->photo);
         }
 
+        // Hapus pengguna yang terkait
+        $user = $teacher->user; // Ambil pengguna yang terkait
+        if ($user) {
+            $user->delete(); // Hapus pengguna
+        }
+
+        // Hapus guru
         $teacher->delete();
 
-        return redirect()->route('panel.teacher.index')->with('success', 'Guru berhasil dihapus.');
+        return redirect()->route('panel.teacher.index')->with('success', 'Guru dan akun pengguna berhasil dihapus.');
     }
 }
