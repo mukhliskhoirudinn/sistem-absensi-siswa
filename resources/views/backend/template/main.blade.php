@@ -36,6 +36,9 @@
 
     <!-- CSS Just for demo purpose, don't include it in your project -->
     <link rel="stylesheet" href="{{ asset('backend') }}/assets/css/demo.css" />
+
+    @stack('css')
+
 </head>
 
 <body>
@@ -49,7 +52,7 @@
                 <div class="main-header-logo">
                     <!-- Logo Header -->
                     <div class="logo-header" data-background-color="white">
-                        <a href="{{ route('dashboard') }}" class="logo">
+                        <a href="{{ route('panel.dashboard') }}" class="logo">
                             <img src="{{ asset('backend') }}/assets/img/kaiadmin/logo_light.svg" alt="navbar brand"
                                 class="navbar-brand" height="20" />
                         </a>
@@ -86,6 +89,7 @@
 
         <!-- End Custom template -->
     </div>
+
     <!--   Core JS Files   -->
     <script src="{{ asset('backend') }}/assets/js/core/jquery-3.7.1.min.js"></script>
     <script src="{{ asset('backend') }}/assets/js/core/popper.min.js"></script>
@@ -268,6 +272,9 @@
             },
         });
     </script>
+
+    @stack('js')
+
 </body>
 
 </html>

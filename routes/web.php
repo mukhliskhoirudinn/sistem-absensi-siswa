@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Backend\TeacherController;
 
 Route::get('/', function () {
     return view('auth.login');
@@ -9,7 +10,9 @@ Route::get('/', function () {
 Route::prefix('panel')->middleware('auth')->group(function () {
     Route::get('/dashboard', function () {
         return view('backend.dashboard.index');
-    })->name('dashboard');
+    })->name('panel.dashboard');
+
+    Route::resource('teacher', TeacherController::class)->names('panel.teacher');
 });
 
 Auth::routes();

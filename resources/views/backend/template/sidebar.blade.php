@@ -2,7 +2,7 @@
     <div class="sidebar-logo">
         <!-- Logo Header -->
         <div class="logo-header border-bottom" data-background-color="white">
-            <a href="#" class="logo text-decoration-none">
+            <a href="{{ route('panel.dashboard') }}" class="logo text-decoration-none">
                 <h1 class="mb-0">
                     <span class="text-primary">Si</span><span class="text-dark fw-bold">Absensi</span>
                 </h1>
@@ -24,9 +24,8 @@
     <div class="sidebar-wrapper scrollbar scrollbar-inner">
         <div class="sidebar-content">
             <ul class="nav nav-secondary">
-                <li class="nav-item active">
-                    <a data-bs-toggle="collapse" href="{{ route('dashboard') }}" class="collapsed"
-                        aria-expanded="false">
+                <li class="nav-item {{ request()->routeIs('panel.dashboard') ? 'active' : '' }}">
+                    <a href="{{ route('panel.dashboard') }}" class="collapsed" aria-expanded="false">
                         <i class="fas fa-home"></i>
                         <p>Dashboard</p>
                     </a>
@@ -37,44 +36,19 @@
                     </span>
                     <h4 class="text-section">Main Menu</h4>
                 </li>
-                <li class="nav-item">
-                    <a data-bs-toggle="collapse" href="#dataGuru">
+                <li class="nav-item {{ request()->routeIs('panel.teacher.index') ? 'active' : '' }}">
+                    <a href="{{ route('panel.teacher.index') }}">
                         <i class="fas fa-chalkboard-teacher"></i>
                         <p>Data Guru</p>
-                        <span class="caret"></span>
                     </a>
-                    <div class="collapse" id="dataGuru">
-                        <ul class="nav nav-collapse">
-                            <li>
-                                <a href="sidebar-style-2.html">
-                                    <span class="sub-item">Sidebar Style 2</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="icon-menu.html">
-                                    <span class="sub-item">Icon Menu</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
                 </li>
-                <li class="nav-item">
-                    <a data-bs-toggle="collapse" href="#dataSiswa">
+                <li class="nav-item {{ request()->is('dataSiswa') ? 'active' : '' }}">
+                    <a href="#dataSiswa">
                         <i class="fas fa-users"></i>
                         <p>Data Siswa</p>
-                        <span class="caret"></span>
                     </a>
-                    <div class="collapse" id="dataSiswa">
-                        <ul class="nav nav-collapse">
-                            <li>
-                                <a href="forms/forms.html">
-                                    <span class="sub-item">Basic Form</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item {{ request()->is('dataKelas*') ? 'active' : '' }}">
                     <a data-bs-toggle="collapse" href="#dataKelas">
                         <i class="fas fa-door-closed"></i>
                         <p>Data Kelas</p>
@@ -95,7 +69,7 @@
                         </ul>
                     </div>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item {{ request()->is('absensiSiswa*') ? 'active' : '' }}">
                     <a data-bs-toggle="collapse" href="#absensiSiswa">
                         <i class="fas fa-clipboard-list"></i>
                         <p>Absensi Siswa</p>
@@ -117,12 +91,11 @@
                     </div>
                 </li>
                 <li class="nav-item">
-                    <a data-bs-toggle="collapse" href="href="{{ route('logout') }}"
-                        onclick="event.preventDefault();
-                                             document.getElementById('logout-form').submit();""
+                    <a href="{{ route('logout') }}"
+                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
                         class="collapsed" aria-expanded="false">
                         <i class="fas fa-sign-out-alt"></i>
-                        <p>Logout</p>
+                        <p> Logout</p>
                     </a>
                     <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                         @csrf

@@ -17,16 +17,18 @@ class UserSeeder extends Seeder
             [
                 'name' => 'Admin',
                 'email' => 'admin@gmail.com',
-                'email_verified_at' => now(),
                 'password' => bcrypt('password'),
                 'role' => 'admin',
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
             [
-                'name' => 'Guru',
-                'email' => 'guru@gmail.com',
-                'email_verified_at' => now(),
+                'name' => 'Guru 1',
+                'email' => 'guru1@gmail.com',
                 'password' => bcrypt('password'),
                 'role' => 'guru',
+                'created_at' => now(),
+                'updated_at' => now(),
             ]
         ]);
     }

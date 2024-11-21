@@ -35,7 +35,7 @@
                                         @enderror
                                     </div>
 
-                                    <div class="mb-2">
+                                    <div class="mb-4">
                                         <label for="password" class="form-label">{{ __('Password') }}</label>
                                         <input id="password" type="password"
                                             class="form-control @error('password') is-invalid @enderror" name="password"
@@ -47,13 +47,13 @@
                                         @enderror
                                     </div>
 
-                                    <div class="mb-3 form-check">
+                                    {{-- <div class="mb-3 form-check">
                                         <input class="form-check-input" type="checkbox" name="remember" id="remember"
                                             {{ old('remember') ? 'checked' : '' }}>
                                         <label class="form-check-label" for="remember">
                                             {{ __('Remember Me') }}
                                         </label>
-                                    </div>
+                                    </div> --}}
 
                                     <div class="mb-3">
                                         <button type="submit" class="btn btn-primary w-100">
